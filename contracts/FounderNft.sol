@@ -28,7 +28,7 @@ contract FounderNft is Ownable, ERC721URIStorage {
     /// @notice cost: Amount to play for minting a nft//
     uint256 public constant COST = 0.069 ether;
     /// @notice maxSupply: Total number of minitable NFTs ///
-    uint256 public constant MAX_SUPPLY = 5;
+    uint256 public constant MAX_SUPPLY = 70;
     /// @notice maxMint: Amount of NFTs a single wallet can mint//
     uint256 public constant MAX_MINT = 5;
     /// @notice max mint batch: Maximum tokens that owner can mint in a batch//
