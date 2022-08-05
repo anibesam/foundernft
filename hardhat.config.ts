@@ -30,16 +30,19 @@ const config: HardhatUserConfig = {
       url: process.env.RINKEBY_URL,
       accounts: [`${process.env.PRIVATE_KEY}`],
     },
-    /*
-    kovan: {
-      url: process.env.KOVAN_URL,
+
+    ropsten: {
+      url: process.env.ROPSTEN_URL,
+      accounts: [`${process.env.PRIVATE_KEY}`],
+    },
+    
+    goerli: {
+      url: process.env.GOERLI_URL,
       accounts: [`${process.env.PRIVATE_KEY}`],
     },
 
-    */
-
-    goerli: {
-      url: process.env.GOERLI_URL,
+    mumbai: {
+      url: process.env.MUMBAI_URL,
       accounts: [`${process.env.PRIVATE_KEY}`],
     },
   /*
@@ -53,8 +56,14 @@ const config: HardhatUserConfig = {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
   },
+  /* etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY
+  },
+  */
+
+  // This a polygonscan api key
   etherscan: {
-    apiKey: "P3928DB1C14F7EZY7UF5DZSBCAS51WX5U1",
+    apiKey: process.env.POLYGONSCAN_API_KEY
   },
 };
 

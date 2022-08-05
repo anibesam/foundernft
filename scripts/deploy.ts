@@ -22,11 +22,16 @@ async function main() {
   console.log("Founder Nft deployed to:", deployer.address);
 
   // Call the function.
-  let txn = await deployer.mintBatch(2)
+  let txn = await deployer.mintBatch(73)
+  // Wait for it to be mined.
+  
+
   // Wait for it to be mined.
   await txn.wait()
-  console.log("Minted 2 NFT")
+  console.log("Minted #73 Nfts")
+
 }
+
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 main().catch((error) => {

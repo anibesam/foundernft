@@ -1,0 +1,15 @@
+{
+  "name": "Founder Nft #71",
+  "description": "Founder Nft Collection from Bankless Africa",
+  "image": "QmaTvWyCP4J3qx4FPMFPYaPfdFf6HpsghazBsctqV8U1oc/71.gif",
+  "attributes": [
+    {
+      "trait_type": "Founder Role",
+      "value": "Counsel"
+    },
+    {
+      "trait_type": "Planet",
+      "value": "web3"
+    }
+  ]
+}

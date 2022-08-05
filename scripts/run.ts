@@ -26,7 +26,12 @@ async function main() {
   // Wait for it to be mined.
   await txn.wait()
   console.log("Minted NFT #1")
+
+  // Wait for it to be mined.
+  await txn.wait()
+  console.log("Minted NFT #2")
 }
+
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 main().catch((error) => {

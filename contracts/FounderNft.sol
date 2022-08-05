@@ -8,7 +8,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "hardhat/console.sol";
+
 
 /*
   ______                    _           _   _  __ _   
@@ -22,33 +24,36 @@ import "hardhat/console.sol";
 
 
 contract FounderNft is Ownable, ERC721URIStorage {
+    
+     //BANK deployed on Rinkeby testnet //
+    IERC20 BANK = IERC20(0xd89dE56Ebf2Df57f66a0C9ebdecC7a4EA4ACe19A);
+
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    /// @notice cost: Amount to play for minting a nft//
-    uint256 public constant COST = 0.069 ether;
+    /// @notice cost: Amount of bank token to pay for minting an nft//
+    uint256 public constant COST = 1000;
     /// @notice maxSupply: Total number of minitable NFTs ///
-    uint256 public constant MAX_SUPPLY = 70;
+    uint256 public constant MAX_SUPPLY = 73;
     /// @notice maxMint: Amount of NFTs a single wallet can mint//
     uint256 public constant MAX_MINT = 5;
     /// @notice max mint batch: Maximum tokens that owner can mint in a batch//
-    uint256 public constant MAX_MINT_BATCH = 100;
+    uint256 public constant MAX_MINT_BATCH = 73;
     /// @notice maxMintPerSession:  Amount of NFT's that can be minted per session as this contract allows bulk minting ///
     uint256 public constant MAX_MINT_PER_SESSION = 5;
     /// @notice paused: State of contract. If paused, no new NFTs can be minted.///
     bool public paused = false;
     // base uri//
-    string constant BASE_URI =
-        "ipfs://QmfFDhfsDYi3Kcob4Sn4vBNoVSfMBPugHXF56PwQ7PPXx8";
+    string constant BASE_URI = 'ipfs://QmXZDp3eyKrdqrvSNUD5dczMPquYfNsJXGBP7zdogKcggN';
     /// @notice tokenMintedByAddress: Keeps a track of number of tokens limted by an address ///
     /// @dev this structure sits perfectly between uitlity and complexity to make sure that no wallet address can mint more than 5 tokens///
     mapping(address => uint256) public tokenMintedByAddress;
 
-    constructor() ERC721("FounderNft", "FNDR") {}
+    constructor() ERC721("Founder Nft", "FDER") {}
 
     event Withdraw(address _to, uint256 _value);
 
-    /// @dev : this works as a wrapper to handle the call if function is calledd with an argument//
+    /// @dev : this works as a wrapper to handle the call if function is called with an argument//
     function mint() external payable {
         mint(1);
     }
@@ -56,7 +61,7 @@ contract FounderNft is Ownable, ERC721URIStorage {
     /// @dev mint: mint an NFT if the following conditions are met ///
     /// 1. Contract is not paused ///
     /// 2. Check if the current mint is not more than maxMint.
-    /// 3. Anount of ether sent is correct ///
+    /// 3. Amount of BANK sent is correct ///
     /// 4. "numberOfTokens" is not more than max allowed to ming per session ///
     /// 5. Calling address won't have more than max allowed to mint per wallet including the triggerd mint ///
     /// @param _numberOfTokens: Amount of tokens to mints as we allow bulk mintiing ///
@@ -76,6 +81,7 @@ contract FounderNft is Ownable, ERC721URIStorage {
         // Update state tokenMintedByAddress //
         tokenMintedByAddress[msg.sender] += _numberOfTokens;
         for (uint256 i = 0; i < _numberOfTokens; i++) {
+             IERC20(BANK).transferFrom(msg.sender, address(this), COST);
             _tokenIds.increment(); // increment counter state
             uint256 tokenId = _tokenIds.current(); // get current state of counter for token id//
             //prepare tokenURI//
@@ -96,11 +102,11 @@ contract FounderNft is Ownable, ERC721URIStorage {
         return paused;
     }
 
-    function totalSupply() public view returns (uint256) {
+     function totalSupply() public view returns (uint256) {
         return _tokenIds.current();
     }
 
-    function withdrawFunds() external onlyOwner {
+   function withdrawFunds() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "No ether left to withdraw");
         (bool success, ) = (msg.sender).call{value: balance}("");
@@ -126,6 +132,7 @@ contract FounderNft is Ownable, ERC721URIStorage {
             string memory tURI = string(abi.encodePacked(BASE_URI, "/", id));
             _safeMint(msg.sender, tokenId);
             _setTokenURI(tokenId, tURI);
-        }
+         }
     }
+    
 }

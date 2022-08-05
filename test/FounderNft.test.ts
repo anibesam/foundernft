@@ -24,13 +24,13 @@ describe("Founder Nft Contract", function () {
       const totalSupply = await contract.totalSupply();
       expect(totalSupply).to.equal(0);
     });
-    it("Max supply is 70", async function () {
+    it("Max supply is 73", async function () {
       const maxSupply = await contract.MAX_SUPPLY();
-      expect(maxSupply).to.equal(70);
+      expect(maxSupply).to.equal(73);
     });
-    it("Minting cost is set to 0.069 ether", async function () {
+    it("Minting cost is set to 1000 BANK", async function () {
       const cost = await contract.COST();
-      expect(Number(ethers.utils.formatEther(cost))).to.equal(0.069);
+      expect(Number(ethers.utils.formatEther(cost))).to.equal(1000);
     });
   });
   // Pause   //
@@ -49,7 +49,7 @@ describe("Founder Nft Contract", function () {
       await contract.connect(owner).pause();
       await expect(
         contract.connect(addr1)["mint()"]({
-          value: ethers.utils.parseEther("0.069"),
+          value: ethers.utils.parseEther("0.055"),
         })
       ).to.be.revertedWith("Contract is paused");
       expect(await contract.paused()).to.equal(true);
@@ -79,7 +79,7 @@ describe("Founder Nft Contract", function () {
       await contract.connect(addr1);
       await expect(
         contract["mint()"]({
-          value: ethers.utils.parseEther("0.069"),
+          value: ethers.utils.parseEther("1000"),
         })
       ).to.emit(contract, "Transfer");
 
@@ -89,7 +89,7 @@ describe("Founder Nft Contract", function () {
       await contract.connect(addr1);
       await expect(
         contract["mint(uint256)"](3, {
-          value: ethers.utils.parseEther((0.069 * 3).toString()),
+          value: ethers.utils.parseEther((1000* 3).toString()),
         })
       ).to.emit(contract, "Transfer");
     });
@@ -97,7 +97,7 @@ describe("Founder Nft Contract", function () {
       await contract.connect(addr1);
       await expect(
         contract["mint(uint256)"](6, {
-          value: ethers.utils.parseEther((0.069 * 6).toString()),
+          value: ethers.utils.parseEther((1000* 6).toString()),
         })
       ).to.be.revertedWith("You can not mint more than 5 tokens per session");
     });
@@ -105,26 +105,26 @@ describe("Founder Nft Contract", function () {
       await contract.connect(addr1);
       // mint 1 token first//
       await expect(
-        contract["mint()"]({ value: ethers.utils.parseEther("0.069") })
+        contract["mint()"]({ value: ethers.utils.parseEther("1000") })
       ).to.emit(contract, "Transfer");
       // now, we try to mint 5 more//
       await expect(
         contract["mint(uint256)"](5, {
-          value: ethers.utils.parseEther((0.069 * 6).toString()),
+          value: ethers.utils.parseEther((1000* 6).toString()),
         })
       ).to.be.revertedWith("A wallet can not mint more than 5 tokens");
     });
     it("Transaction is reverted if insufficient funds are provided", async function () {
       await contract.connect(addr1);
       await expect(
-        contract["mint()"]({ value: ethers.utils.parseEther("0.068999") })
+        contract["mint()"]({ value: ethers.utils.parseEther("999") })
       ).to.be.reverted;
     });
     it("Total supply is updated after mint", async function () {
       const totalSupply = await contract.totalSupply();
       await contract.connect(addr1);
       await expect(
-        contract["mint()"]({ value: ethers.utils.parseEther("0.069") })
+        contract["mint()"]({ value: ethers.utils.parseEther("1000") })
       ).to.emit(contract, "Transfer");
       expect(await contract.totalSupply()).to.equal(totalSupply + 1);
     });
@@ -143,7 +143,7 @@ describe("Founder Nft Contract", function () {
     it("Owner can withdraw funds", async function () {
       await expect(
         contract.connect(addr1)["mint(uint256)"](5, {
-          value: ethers.utils.parseEther((5 * 0.069).toString()),
+          value: ethers.utils.parseEther((5 * 1000).toString()),
         })
       ).to.emit(contract, "Transfer");
 
@@ -193,16 +193,16 @@ describe("Founder Nft Contract", function () {
   });
   describe("Batch mint", function () {
     it("User can not batch mint", async function () {
-      await expect(contract.connect(addr1).mintBatch(100)).to.be.revertedWith(
+      await expect(contract.connect(addr1).mintBatch(73)).to.be.revertedWith(
         "Ownable: caller is not the owner"
       );
     });
     it("Owner can mint a batch", async function () {
-      await expect(contract.connect(owner).mintBatch(100)).to.emit(
+      await expect(contract.connect(owner).mintBatch(73)).to.emit(
         contract,
         "Transfer"
       );
-      expect(await contract.totalSupply()).to.equal(100);
+      expect(await contract.totalSupply()).to.equal(73);
     });
     it("Owner can not mint more than 100 tokens in a batch", async function () {
       await expect(contract.connect(owner).mintBatch(101)).to.revertedWith(
